@@ -1,6 +1,6 @@
 
 import './App.css'
-import Services from './components/Services'
+import EmployeeForm from './components/EmployeeForm'
 
 function App() {
   
@@ -8,7 +8,7 @@ function App() {
   return (
     <>
      
-     <Services/>
+     <EmployeeForm/>
      
     
     </>
