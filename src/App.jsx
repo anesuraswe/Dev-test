@@ -8,10 +8,10 @@ const App = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/add-employee" component={EmployeeForm} />
-                <Route path="/search-employees" component={EmployeeSearch} />
-                <Route path="/employee-history/:id" component={EmployeeHistory} />
-                <Route path="/" component={EmployeeSearch} />
+                <Route path="/add-employee" element={<EmployeeForm/>} />
+                <Route path="/search-employees" element={<EmployeeSearch/>} />
+                <Route path="/employee-history/:id" element={<EmployeeHistory/>} />
+                <Route path="/" element={<EmployeeSearch/>} />
             </Routes>
         </Router>
     );

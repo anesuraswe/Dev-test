@@ -19,6 +19,7 @@ const EmployeeSearch = () => {
 
     return (
         <div>
+            <h1>Search page</h1>
             <input type="text" value={searchTerm} onChange={handleSearch} placeholder="Search by name" />
             <ul>
                 {filteredEmployees.map(employee => (

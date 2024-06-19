@@ -15,7 +15,7 @@ const EmployeeHistory = ({ employeeId }) => {
 
     return (
         <div>
-            <h2>{employee.name}'s History</h2>
+            <h2>{employee.name}&apos;s History</h2>
             <ul>
                 {employee.roles.map((role, index) => (
                     <li key={index}>
