@@ -10,7 +10,8 @@ const MainScreen = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
+  const [data, setData] = useState([]);
+  const [filter, setFilter] = useState('companies');
 
   const { addEmployee, fetchCompanies, fetchDepartments, fetchEmployees, companies, departments, employees } = useFeatureStore(state => ({
     addEmployee: state.addEmployee,
@@ -63,52 +64,54 @@ const MainScreen = () => {
     }
   };
 
-  const [data, setData] = useState([]);
-  const [filter, setFilter] = useState('companies');
+  useEffect(() => {
+    const fetchData = async () => {
+      switch (filter) {
+        case 'companies':
+          await fetchCompanies();
+          break;
+        case 'departments':
+          await fetchDepartments();
+          break;
+        case 'employees':
+          await fetchEmployees();
+          break;
+        default:
+          setData([]);
+      }
+      filterData();
+    };
+    fetchData();
+  }, [filter, fetchCompanies, fetchDepartments, fetchEmployees]);
 
   useEffect(() => {
+    filterData();
+  }, [searchQuery, companies, departments, employees]);
+
+  const filterData = () => {
+    let filteredData = [];
     switch (filter) {
       case 'companies':
-        fetchCompanies(searchQuery).then(() => setData(companies));
+        filteredData = companies.filter(company => company.name.toLowerCase().includes(searchQuery.toLowerCase()));
         break;
       case 'departments':
-        fetchDepartments(searchQuery).then(() => setData(departments));
+        filteredData = departments.filter(department => department.name.toLowerCase().includes(searchQuery.toLowerCase()));
         break;
       case 'employees':
-        fetchEmployees(searchQuery).then(() => setData(employees));
+        filteredData = employees.filter(employee => employee.name.toLowerCase().includes(searchQuery.toLowerCase()));
         break;
       default:
-        setData([]);
+        filteredData = [];
     }
-  }, [filter, fetchCompanies, fetchDepartments, fetchEmployees, companies, departments, employees, searchQuery]);
+    setData(filteredData);
+  };
 
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
   };
 
   const handleSearchChange = (event) => {
-    const query = event.target.value;
-    setSearchQuery(query);
-
-    if (query.length > 0) {
-      let filteredSuggestions = [];
-      switch (filter) {
-        case 'companies':
-          filteredSuggestions = companies.filter(company => company.name.toLowerCase().includes(query.toLowerCase()));
-          break;
-        case 'departments':
-          filteredSuggestions = departments.filter(department => department.name.toLowerCase().includes(query.toLowerCase()));
-          break;
-        case 'employees':
-          filteredSuggestions = employees.filter(employee => employee.name.toLowerCase().includes(query.toLowerCase()));
-          break;
-        default:
-          filteredSuggestions = [];
-      }
-      setSuggestions(filteredSuggestions);
-    } else {
-      setSuggestions([]);
-    }
+    setSearchQuery(event.target.value);
   };
 
   const renderDetails = (item) => {
@@ -179,15 +182,6 @@ const MainScreen = () => {
               <FaSearch />
             </div>
           </div>
-          {suggestions.length > 0 && (
-            <ul className="border border-gray-300 rounded-lg mt-2 bg-white shadow-sm">
-              {suggestions.map((suggestion, index) => (
-                <li key={index} className="px-4 py-2 cursor-pointer hover:bg-gray-100" onClick={() => setSearchQuery(suggestion.name)}>
-                  {suggestion.name}
-                </li>
-              ))}
-            </ul>
-          )}
         </div>
         </div>
         
