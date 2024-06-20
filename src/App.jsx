@@ -1,15 +1,17 @@
 import React from "react";
-
-import EmployeeSearch from "./components/EmployeeSearch";
-
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import MainScreen from "./components/MainScreen";
+import AuthLogin from "./components/AuthLogin";
 
 const App = () => {
   return (
-    <>
+    <Router>
       
-      <EmployeeSearch />
-      
-    </>
+      <Routes>
+        <Route index element={<AuthLogin />}/>
+        <Route path="/table" element={<MainScreen />} />
+      </Routes>
+    </Router>
   );
 };
 
