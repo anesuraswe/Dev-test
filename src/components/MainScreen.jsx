@@ -188,7 +188,7 @@ const MainScreen = () => {
         {data.length > 0 && (
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white rounded-sm overflow-hidden shadow-lg">
-              <thead className='bg-gray-900 text-white uppercase text-sm leading-normal'>
+              <thead className='bg-slate-700 text-white uppercase text-sm leading-normal'>
                 <tr>
                   <th className="py-3 px-6 text-left"> <div className='flex items-center'> Name</div></th>
                   {filter === 'companies' && (
