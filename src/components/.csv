@@ -1,0 +1,12 @@
+company,name,employee_id,department,role,date_started,date_left,duties
+1,Jacque Employee,EMP004,2,Engineer,2021-01-09,,DevOps
+1,John Doe,EMP005,1,Engineer,2021-02-10,,Backend Development
+1,Jane Smith,EMP006,2,Engineer,2021-03-15,,Frontend Development
+1,Michael Johnson,EMP007,1,Engineer,2021-04-20,,Database Management
+1,Emily Davis,EMP008,2,Engineer,2021-05-25,,Cloud Infrastructure
+1,David Wilson,EMP009,1,Engineer,2021-06-30,,Network Security
+1,Emma Brown,EMP010,2,Engineer,2021-07-05,,Software Testing
+1,James Taylor,EMP011,1,Engineer,2021-08-10,,System Analysis
+1,Olivia Martinez,EMP012,2,Engineer,2021-09-15,,Technical Support
+1,William Anderson,EMP013,1,Engineer,2021-10-20,,Project Management
+1,Ava Thomas,EMP014,2,Engineer,2021-11-25,,Quality Assurance
