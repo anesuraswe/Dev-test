@@ -23,7 +23,7 @@ function AuthLogin() {
       <div className="absolute inset-0">
         <img
           className="object-cover w-full h-full"
-          src="https://img.freepik.com/free-vector/flat-graduate-students-mantle-cap-holding-university-diploma-paper-scroll-happy-young-people-academic-gown-with-bachelor-degree-celebrating-graduation-from-college-university-high-school_88138-929.jpg?t=st=1718276414~exp=1718280014~hmac=c4efa23d179e9996f7357a3e80836b8f6f165a68bec61ad57609606ddb2f3242&w=1380"
+          src="https://img.freepik.com/free-vector/job-search-composition-with-indoor-scenery-character-female-applicant-sitting-front-employers-illustration_1284-65483.jpg?t=st=1718875880~exp=1718879480~hmac=24b5e4887065f8d7a23f8f8b65baa004a77dd6f56d48d0d23f516454418718bc&w=996"
           alt=""
         />
       </div>
