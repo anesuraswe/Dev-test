@@ -10,33 +10,41 @@ const useFeatureStore = create(set => ({
   companies: [],
   departments: [],
   roles: [],
-  fetchEmployees: async () => {
+  fetchEmployees: async (searchQuery = '') => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/employees/`);
+      const response = await axios.get(`${BACKEND_URL}/api/employees/`, {
+        params: { search: searchQuery }
+      });
       set({ employees: response.data });
     } catch (error) {
       console.error('Error fetching employees:', error);
     }
   },
-  fetchCompanies: async () => {
+  fetchCompanies: async (searchQuery = '') => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/companies/`);
+      const response = await axios.get(`${BACKEND_URL}/api/companies/`, {
+        params: { search: searchQuery }
+      });
       set({ companies: response.data });
     } catch (error) {
       console.error('Error fetching companies:', error);
     }
   },
-  fetchDepartments: async () => {
+  fetchDepartments: async (searchQuery = '') => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/departments/`);
+      const response = await axios.get(`${BACKEND_URL}/api/departments/`, {
+        params: { search: searchQuery }
+      });
       set({ departments: response.data });
     } catch (error) {
       console.error('Error fetching departments:', error);
     }
   },
-  fetchRoles: async () => {
+  fetchRoles: async (searchQuery = '') => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/roles/`);
+      const response = await axios.get(`${BACKEND_URL}/api/roles/`, {
+        params: { search: searchQuery }
+      });
       set({ roles: response.data });
     } catch (error) {
       console.error('Error fetching roles:', error);
