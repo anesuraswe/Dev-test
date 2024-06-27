@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import axios from 'axios';
-import BACKEND_URL from "./urls";
 
+const authUrl = "http://localhost:5000/talentVerify"
 // Configure axios to include credentials in requests to support CORS
 axios.defaults.withCredentials = true;
 
@@ -11,7 +11,7 @@ const useAuthStore = create(set => ({
   profile: null,
   signIn: async (username, password) => {
     try {
-      const response = await axios.post(`${BACKEND_URL}/signin/`, { username, password });
+      const response = await axios.post(`${authUrl}/signin`, { username, password });
       if (response.status === 200) {
         set({
           token: response.data.token,
