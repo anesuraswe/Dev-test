@@ -3,8 +3,12 @@ import useFeatureStore from '../services/features';
 import Papa from 'papaparse';
 import { LinearProgress } from '@mui/material';
 import { FaSearch } from 'react-icons/fa';
+import useAllDataStore from '../services/getAll'; // Import the useAllDataStore
+import useUploadStore from '../services/upload'; // Import the useUploadStore
 
+// MainScreen component definition
 const MainScreen = () => {
+  // State variables for managing CSV data, file errors, upload progress, loading state, search query, data, and filter
   const [csvData, setCsvData] = useState([]);
   const [fileError, setFileError] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -13,6 +17,7 @@ const MainScreen = () => {
   const [data, setData] = useState([]);
   const [filter, setFilter] = useState('companies');
 
+  // Extracting necessary functions and data from useFeatureStore
   const { addEmployee, fetchCompanies, fetchDepartments, fetchEmployees, companies, departments, employees } = useFeatureStore(state => ({
     addEmployee: state.addEmployee,
     fetchCompanies: state.fetchCompanies,
@@ -23,6 +28,21 @@ const MainScreen = () => {
     employees: state.employees
   }));
 
+  // Extracting necessary functions and data from useAllDataStore
+  const { fetchAllData, companies: allCompanies, departments: allDepartments, employees: allEmployees } = useAllDataStore(state => ({
+    fetchAllData: state.fetchAllData,
+    companies: state.companies,
+    departments: state.departments,
+    employees: state.employees
+  }));
+  // Extracting necessary functions and data from useUploadStore
+  const { uploadCSV, uploadMessage, uploadError } = useUploadStore(state => ({
+    uploadCSV: state.uploadCSV,
+    uploadMessage: state.uploadMessage,
+    uploadError: state.uploadError
+  }));
+
+  // Function to handle file upload
   const handleFileUpload = async (event) => {
     const file = event.target.files[0];
     const fileExtension = file.name.split('.').pop().toLowerCase();
@@ -64,56 +84,66 @@ const MainScreen = () => {
     }
   };
 
+  // Effect to fetch all data on component mount
   useEffect(() => {
     const fetchData = async () => {
-      switch (filter) {
-        case 'companies':
-          await fetchCompanies();
-          break;
-        case 'departments':
-          await fetchDepartments();
-          break;
-        case 'employees':
-          await fetchEmployees();
-          break;
-        default:
-          setData([]);
-      }
-      filterData();
+      await fetchAllData(); // Use fetchAllData from useAllDataStore
+      // Format and shorten data before setting it
+      const formattedData = allCompanies.map(company => ({
+        ...company,
+        address: company.address.substring(0, 20) + '...',
+        contact_person: company.contact_person.substring(0, 10) + '...',
+        contact_phone: company.contact_phone.substring(0, 10) + '...',
+        email: company.email.substring(0, 10) + '...'
+      }));
+      setData(formattedData);
     };
     fetchData();
-  }, [filter, fetchCompanies, fetchDepartments, fetchEmployees]);
+  }, []);
 
+  // Effect to filter data based on search query and filter type
   useEffect(() => {
     filterData();
-  }, [searchQuery, companies, departments, employees]);
+  }, [searchQuery, allCompanies, allDepartments, allEmployees]);
 
+  // Function to filter data based on search query and filter type
   const filterData = () => {
     let filteredData = [];
     switch (filter) {
       case 'companies':
-        filteredData = companies.filter(company => company.name.toLowerCase().includes(searchQuery.toLowerCase()));
+        filteredData = allCompanies.filter(company => company.name.toLowerCase().includes(searchQuery.toLowerCase()));
         break;
       case 'departments':
-        filteredData = departments.filter(department => department.name.toLowerCase().includes(searchQuery.toLowerCase()));
+        filteredData = allDepartments.filter(department => department.name.toLowerCase().includes(searchQuery.toLowerCase()));
         break;
       case 'employees':
-        filteredData = employees.filter(employee => employee.name.toLowerCase().includes(searchQuery.toLowerCase()));
+        filteredData = allEmployees.filter(employee => employee.name.toLowerCase().includes(searchQuery.toLowerCase()));
         break;
       default:
         filteredData = [];
     }
-    setData(filteredData);
+    // Format and shorten data before setting it
+    const formattedFilteredData = filteredData.map(item => ({
+      ...item,
+      address: item.address ? item.address.substring(0, 20) + '...' : '',
+      contact_person: item.contact_person ? item.contact_person.substring(0, 10) + '...' : '',
+      contact_phone: item.contact_phone ? item.contact_phone.substring(0, 10) + '...' : '',
+      email: item.email ? item.email.substring(0, 10) + '...' : ''
+    }));
+    setData(formattedFilteredData);
   };
 
+  // Function to handle filter change
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
   };
 
+  // Function to handle search query change
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
+  // Function to render details based on filter type
   const renderDetails = (item) => {
     switch (filter) {
       case 'companies':
@@ -157,7 +187,22 @@ const MainScreen = () => {
             <form action="">
               <div className="mb-4">
                 <label htmlFor="CSV" className="block text-sm font-medium text-gray-700 mb-2">CSV File</label>
-                <input type="file" id="CSV" onChange={handleFileUpload} name="CSV" className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" accept=".csv" />
+                <input type="file" id="CSV" onChange={async (event) => {
+                  const file = event.target.files[0];
+                  if (file) {
+                    setLoading(true);
+                    await uploadCSV(file);
+                    setLoading(false);
+                    if (uploadError) {
+                      setFileError(uploadError);
+                    } else {
+                      setFileError(null);
+                      setUploadProgress(100);
+                    }
+                  } else {
+                    setFileError("Please upload a CSV file or an Excel spreadsheet.");
+                  }
+                }} name="CSV" className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" accept=".csv" />
                 {loading && <LinearProgress variant="determinate" value={uploadProgress} />}
               </div>
             </form>
@@ -232,3 +277,4 @@ const MainScreen = () => {
 };
 
 export default MainScreen;
+
